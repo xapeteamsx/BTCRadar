@@ -242,7 +242,7 @@ def process_om(data):
 
     df.drop_duplicates()
 
-    print(df)
+    #print(df)
 
     fn = 'btc-'+str(df_utc)+'.csv'
     last_date = dsave.strftime('%Y%m%d')

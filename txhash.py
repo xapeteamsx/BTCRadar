@@ -28,8 +28,7 @@ except ImportError:
 f = open("webSocketTester.log", "a")
 
 haseum = ""
-pesan_lama=""
-pesan=""
+old_msg=""
 
 def on_message(ws, message):
     try:    
@@ -69,7 +68,7 @@ def on_pong(ws, message):
     print(message)
 
 def process_om(data):    
-    global df, haseum, pesan, pesan_lama
+    global df, haseum, old_msg
     #print(data['x'])
 
     timex = data['x']['time']
@@ -206,10 +205,10 @@ def searchAddress(address,pkey):
         print("searchAddress -> "+addr, str(txn))
         #telegram_bot_sendtext(addr +" -> "+ str(final_balance))        
         if (final_balance > 0) or (txn > 0):            
-            pesan = "Found address "+addr+" with balance "+str(final_balance)+" [ "+pks+" ]" + " [ " + str(wiiff)
-            if pesan_lama != pesan:
-                telegram_bot_sendtext(pesan)
-                pesan_lama = pesan
+            msg = "Found address "+addr+" with balance "+str(final_balance)+" [ "+pks+" ]" + " [ " + str(wiiff)
+            if old_msg != msg:
+                telegram_bot_sendtext(msg)
+                old_msg = msg
         i=i+1
 
 

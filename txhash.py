@@ -190,35 +190,17 @@ def process_om(data):
     wif5 = base58(pks_to_pkk5)
     segwitAddr5 = segwitAddress(wif5)
     
-    print(segwitAddr1)
-
     skey = key1+"|"+key2+"|"+key3+"|"+key4+"|"+key5    
     wiff = wif1+"|"+wif2+"|"+wif3+"|"+wif4+"|"+wif5    
     saddr1 = address1+"|"+address2+"|"+address3+"|"+address4+"|"+address5
     saddr2 = comp_address1+"|"+comp_address2+"|"+comp_address3+"|"+comp_address4+"|"+comp_address5
-
-    #print(segwitAddr1['NativeAddress'])
 
     saddr3 = segwitAddr1['NativeAddress']+"|"+segwitAddr1['NativeAddress2']+"|"+segwitAddr1['P2SH_P2WPKH_Address']+"|"+segwitAddr1['P2WSHAddress']+"|"+segwitAddr1['P2WSH_P2PK_Address']    
     saddr4 = segwitAddr2['NativeAddress']+"|"+segwitAddr2['NativeAddress2']+"|"+segwitAddr2['P2SH_P2WPKH_Address']+"|"+segwitAddr2['P2WSHAddress']+"|"+segwitAddr2['P2WSH_P2PK_Address']    
     saddr5 = segwitAddr3['NativeAddress']+"|"+segwitAddr2['NativeAddress2']+"|"+segwitAddr2['P2SH_P2WPKH_Address']+"|"+segwitAddr3['P2WSHAddress']+"|"+segwitAddr3['P2WSH_P2PK_Address']    
     saddr6 = segwitAddr4['NativeAddress']+"|"+segwitAddr4['NativeAddress2']+"|"+segwitAddr3['P2SH_P2WPKH_Address']+"|"+segwitAddr4['P2WSHAddress']+"|"+segwitAddr4['P2WSH_P2PK_Address']    
     saddr7 = segwitAddr5['NativeAddress']+"|"+segwitAddr5['NativeAddress2']+"|"+segwitAddr4['P2SH_P2WPKH_Address']+"|"+segwitAddr5['P2WSHAddress']+"|"+segwitAddr5['P2WSH_P2PK_Address']    
-
-    #print("saddr3 -> ",saddr3)
-    
-    '''
-    dkey.append(skey)
-    dwiff.append(wiff)
-    daddr1.append(saddr1)
-    daddr2.append(saddr2)
-    daddr1.append(saddr3)
-    daddr2.append(saddr4)
-    daddr3.append(saddr5)
-    daddr4.append(saddr6)
-    daddr5.append(saddr7)
-    '''
-    
+        
     dict1 = {
         'date': cur_date, 
         'Keys': skey, 

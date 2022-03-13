@@ -250,10 +250,11 @@ def process_om(data):
 
     if str(reset_time) == '00:01':
         df.to_csv(fn2)
-
+    '''
     if df.size > 20:
         df.to_csv(fn)
-
+    '''
+    
     '''
     search address in our current dataframe
     '''    

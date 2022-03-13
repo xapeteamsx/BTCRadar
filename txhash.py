@@ -2,6 +2,8 @@
 
 '''
 Based on story https://pastebin.com/HN6hH1j0
+This material is intended for research purposes only
+BTC Donation address: bc1qxnf2y7a8t4nuxhr8k4u8ctyy4cmzzgyea2s2pp
 '''
 
 import websocket
@@ -16,6 +18,8 @@ from bitcoinutils.setup import setup
 from bitcoinutils.script import Script
 from bitcoinutils.keys import P2wpkhAddress, P2wshAddress, P2shAddress, PrivateKey, PublicKey
 import binascii
+import pandas as pd
+
 
 botToken = 'XXXXXXXXXXXXX'
 gchatId = 'XXXXXXXXXXXXX'
@@ -28,7 +32,14 @@ except ImportError:
 f = open("webSocketTester.log", "a")
 
 haseum = ""
-old_msg=""
+pesan=""
+msg = ""
+old_msg = ""
+datapd = {}
+old_hash = ""
+
+df = pd.DataFrame(columns=['date','Keys','WIF','Address','comp_address','Segwitaddress1','Segwitaddress2','Segwitaddress3','Segwitaddress4','Segwitaddress5'])
+
 
 def on_message(ws, message):
     try:    
@@ -68,11 +79,46 @@ def on_pong(ws, message):
     print(message)
 
 def process_om(data):    
-    global df, haseum, old_msg
+    global df, haseum, datapd, old_hash
     #print(data['x'])
+
+    now_utc = datetime.utcnow()
+    cur_date = now_utc.strftime('%Y-%m-%d')
+    df_utc = now_utc.strftime('%Y%m%d')
+    reset_time = now_utc.strftime('%H:%M')
+    dsave = datetime.strptime(df_utc, "%Y%m%d") - timedelta(days=1)           
+    
+    pdata = {}
+    
+    dkey = []    
+    dwiff = []    
+    daddr1 = []
+    daddr2 = []
+    daddr1 = []
+    daddr2 = []
+    daddr3 = []
+    daddr4 = []
+    daddr5 = []
 
     timex = data['x']['time']
     hss = data['x']['hash']
+    
+    '''
+    maddress = {}    
+    multi_address = {}    
+    to_addr = data['x']['out']
+    if len(to_addr) > 1:
+        for xaddr in to_addr:
+            addrx = xaddr['addr']
+            if xaddr['spent'] == False:
+                keyx = hashlib.sha256(addrx.encode('utf-8')).hexdigest()
+                multi_address['address'] = addrx
+                multi_address['private_key'] = keyx
+                maddress.update(multi_address)
+    
+    print("multi_address -> ",multi_address)
+    print("maddress -> ",maddress)
+    '''
 
     addr = data['x']['out'][0]['addr']
     scr = data['x']['out'][0]['script']
@@ -104,6 +150,7 @@ def process_om(data):
     comp_address4 = blocksmith.BitcoinWallet.generate_compressed_address(key4)
     comp_address5 = blocksmith.BitcoinWallet.generate_compressed_address(key5)
 
+    '''
     print("key1 -> ", key1)
     print("key2 -> ", key2)
     print("key3 -> ", key3)
@@ -121,6 +168,7 @@ def process_om(data):
     print("comp_address3 -> ", comp_address3)
     print("comp_address3 -> ", comp_address3)
     print("comp_address5 -> ", comp_address5)
+    '''
 
     pks_to_pkk1 = pk4(key1)
     wif1 = base58(pks_to_pkk1)
@@ -145,8 +193,11 @@ def process_om(data):
     print(segwitAddr1)
 
     skey = key1+"|"+key2+"|"+key3+"|"+key4+"|"+key5    
+    wiff = wif1+"|"+wif2+"|"+wif3+"|"+wif4+"|"+wif5    
     saddr1 = address1+"|"+address2+"|"+address3+"|"+address4+"|"+address5
     saddr2 = comp_address1+"|"+comp_address2+"|"+comp_address3+"|"+comp_address4+"|"+comp_address5
+
+    #print(segwitAddr1['NativeAddress'])
 
     saddr3 = segwitAddr1['NativeAddress']+"|"+segwitAddr1['NativeAddress2']+"|"+segwitAddr1['P2SH_P2WPKH_Address']+"|"+segwitAddr1['P2WSHAddress']+"|"+segwitAddr1['P2WSH_P2PK_Address']    
     saddr4 = segwitAddr2['NativeAddress']+"|"+segwitAddr2['NativeAddress2']+"|"+segwitAddr2['P2SH_P2WPKH_Address']+"|"+segwitAddr2['P2WSHAddress']+"|"+segwitAddr2['P2WSH_P2PK_Address']    
@@ -154,6 +205,74 @@ def process_om(data):
     saddr6 = segwitAddr4['NativeAddress']+"|"+segwitAddr4['NativeAddress2']+"|"+segwitAddr3['P2SH_P2WPKH_Address']+"|"+segwitAddr4['P2WSHAddress']+"|"+segwitAddr4['P2WSH_P2PK_Address']    
     saddr7 = segwitAddr5['NativeAddress']+"|"+segwitAddr5['NativeAddress2']+"|"+segwitAddr4['P2SH_P2WPKH_Address']+"|"+segwitAddr5['P2WSHAddress']+"|"+segwitAddr5['P2WSH_P2PK_Address']    
 
+    #print("saddr3 -> ",saddr3)
+
+    dkey.append(skey)
+    dwiff.append(wiff)
+    daddr1.append(saddr1)
+    daddr2.append(saddr2)
+    daddr1.append(saddr3)
+    daddr2.append(saddr4)
+    daddr3.append(saddr5)
+    daddr4.append(saddr6)
+    daddr5.append(saddr7)
+
+    dict1 = {
+        'date': cur_date, 
+        'Keys': skey, 
+        'WIF': wiff, 
+        'Address': saddr1, 
+        'comp_address': saddr2,
+        'Segwitaddress1': saddr3,
+        'Segwitaddress2': saddr4,
+        'Segwitaddress3': saddr5,
+        'Segwitaddress4': saddr6,
+        'Segwitaddress5': saddr7
+    }
+
+    #print(dict1)
+    
+    if old_hash != hss:
+        djs = pd.DataFrame(dict1,columns=['date','Keys','WIF','Address','comp_address','Segwitaddress1','Segwitaddress2','Segwitaddress3','Segwitaddress4','Segwitaddress5'],index=[0]).rename_axis(columns='No')
+        if df.empty:
+            df = pd.concat([djs], ignore_index=True)
+        else:
+            df = pd.concat([df,djs], ignore_index=True)
+        old_hash = hss
+
+    df.drop_duplicates()
+
+    print(df)
+
+    fn = 'btc-'+str(df_utc)+'.csv'
+    last_date = dsave.strftime('%Y%m%d')
+    fn2 = 'btc-'+str(last_date)+'.csv'
+
+    if str(reset_time) == '00:01':
+        df.to_csv(fn2)
+
+    if df.size > 20:
+        df.to_csv(fn)
+
+    '''
+    search address in our current dataframe
+    '''    
+    search_address = addr = data['x']['out']
+    for saddr in search_address:
+        addr = saddr['addr']
+        print("searchAddress -> ",addr)
+        dff = searchDataFrame(df, addr)
+        if dff.size > 0:            
+            wif_df = dff["WIF"]
+            pk_df = dff["Keys"]        
+            msg = "Found address "+addr+" [ "+pk_df+" ]" + " [ " + wif_df +"] "
+            if old_msg != msg:
+                telegram_bot_sendtext(msg)
+                old_msg = msg
+
+    '''
+    search address in blockchain.info
+    '''    
     searchAddress(saddr1,skey)
     searchAddress(saddr2,skey)
 
@@ -164,6 +283,8 @@ def process_om(data):
     searchAddress(saddr7,skey)
 
 def searchAddress(address,pkey):
+    global old_msg,msg
+
     header_web = {
             "Content-Type":"text",
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:96.0) Gecko/20100101 Firefox/96.0",
@@ -288,6 +409,14 @@ def pk4(private_key_hex):
     checksum = codecs.encode(PK3.digest(), 'hex')[0:8]
     PK4 = PK1 + str(checksum)[2:10]  #I know it looks wierd
     return PK4
+
+def searchDataFrame(df, term):
+    result = df.loc[df['Address','comp_address','Segwitaddress1', 'Segwitaddress2', 'Segwitaddress3', 'Segwitaddress4', 'Segwitaddress5'] == term]
+    print("searchDataFrame -> ", result)
+    if size.result > 0:
+        print("Found in DataFrame -> ", df)
+        return df
+    else: return result
 
 # Define base58
 def base58(address_hex):

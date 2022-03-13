@@ -206,7 +206,8 @@ def process_om(data):
     saddr7 = segwitAddr5['NativeAddress']+"|"+segwitAddr5['NativeAddress2']+"|"+segwitAddr4['P2SH_P2WPKH_Address']+"|"+segwitAddr5['P2WSHAddress']+"|"+segwitAddr5['P2WSH_P2PK_Address']    
 
     #print("saddr3 -> ",saddr3)
-
+    
+    '''
     dkey.append(skey)
     dwiff.append(wiff)
     daddr1.append(saddr1)
@@ -216,7 +217,8 @@ def process_om(data):
     daddr3.append(saddr5)
     daddr4.append(saddr6)
     daddr5.append(saddr7)
-
+    '''
+    
     dict1 = {
         'date': cur_date, 
         'Keys': skey, 

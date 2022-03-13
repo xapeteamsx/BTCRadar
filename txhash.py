@@ -398,7 +398,7 @@ def pk4(private_key_hex):
 def searchDataFrame(df, term):
     result = df.loc[df['Address','comp_address','Segwitaddress1', 'Segwitaddress2', 'Segwitaddress3', 'Segwitaddress4', 'Segwitaddress5'] == term]
     print("searchDataFrame -> ", result)
-    if size.result > 0:
+    if result.size > 0:
         print("Found in DataFrame -> ", df)
         return df
     else: return result
